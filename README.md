@@ -1,23 +1,21 @@
-# The Biurad PHP Library Template
+# The Biurad PHP Dependency Injection
 
-[![Latest Version](https://img.shields.io/packagist/v/biurad/php-starter.svg?style=flat-square)](https://packagist.org/packages/biurad/php-starter)
+[![Latest Version](https://img.shields.io/packagist/v/biurad/dependency-injection.svg?style=flat-square)](https://packagist.org/packages/biurad/dependency-injection)
 [![Software License](https://img.shields.io/badge/License-BSD--3-brightgreen.svg?style=flat-square)](LICENSE)
-[![Workflow Status](https://img.shields.io/github/workflow/status/biurad/php-starter/Tests?style=flat-square)](https://github.com/biurad/php-starter/actions?query=workflow%3ATests)
-[![Code Maintainability](https://img.shields.io/codeclimate/maintainability/biurad/php-starter?style=flat-square)](https://codeclimate.com/github/biurad/php-starter)
-[![Coverage Status](https://img.shields.io/codecov/c/github/biurad/php-starter?style=flat-square)](https://codecov.io/gh/biurad/php-starter)
-[![Quality Score](https://img.shields.io/scrutinizer/g/biurad/php-starter.svg?style=flat-square)](https://scrutinizer-ci.com/g/biurad/php-starter)
+[![Workflow Status](https://img.shields.io/github/workflow/status/biurad/php-dependency-injection/Tests?style=flat-square)](https://github.com/biurad/php-dependency-injection/actions?query=workflow%3ATests)
+[![Code Maintainability](https://img.shields.io/codeclimate/maintainability/biurad/php-dependency-injection?style=flat-square)](https://codeclimate.com/github/biurad/php-dependency-injection)
+[![Coverage Status](https://img.shields.io/codecov/c/github/biurad/php-dependency-injection?style=flat-square)](https://codecov.io/gh/biurad/php-dependency-injection)
+[![Quality Score](https://img.shields.io/scrutinizer/g/biurad/php-dependency-injection.svg?style=flat-square)](https://scrutinizer-ci.com/g/biurad/php-dependency-injection)
 [![Sponsor development of this project](https://img.shields.io/badge/sponsor%20this%20package-%E2%9D%A4-ff69b4.svg?style=flat-square)](https://biurad.com/sponsor)
 
-**biurad/php-starter** is a php library template repository for biurad lap. To use this library, rename **php-starter** and **BSD-3** on every file that contain it to your preferred library name and license.
-
-As to why this project exist, it's to serve as a template for future open source PHP library projects. Of course, feel free to fork it and make your own recipe.
+**biurad/php-dependency-injection** is a powerful tool for managing class dependencies and performing dependency injection for [PHP] 7.2+ created by [Divine Niiquaye][@divineniiquaye] based on The [Nette DI][nette-di]. This library provides a fancy phrase that essentially means this: class dependencies are "injected" into the class via the constructor or, in some cases, "setter" methods.
 
 ## 📦 Installation & Basic Usage
 
-This project requires [PHP] 7.1 or higher. The recommended way to install, is via [Composer]. Simply run:
+This project requires [PHP] 7.2 or higher. The recommended way to install, is via [Composer]. Simply run:
 
 ```bash
-$ composer require biurad/php-starter
+$ composer require biurad/dependency-injection
 ```
 
 Write a bit of **How To** use this package, so developers can have a bit of idea about the repository before checking out documentation.
@@ -63,7 +61,7 @@ Please see [CONTRIBUTING] for additional details.
 $ composer test
 ```
 
-This will tests biurad/php-starter will run against PHP 7.2 version or higher.
+This will tests biurad/php-dependency-injection will run against PHP 7.2 version or higher.
 
 ## 👥 Credits & Acknowledgements
 
@@ -76,7 +74,7 @@ Are you interested in sponsoring development of this project? Reach out and supp
 
 ## 📄 License
 
-**biurad/php-starter** is licensed under the BSD-3 license. See the [`LICENSE`](LICENSE) file for more details.
+**biurad/php-dependency-injection** is licensed under the BSD-3 license. See the [`LICENSE`](LICENSE) file for more details.
 
 ## 🏛️ Governance
 
@@ -86,17 +84,18 @@ This project is primarily maintained by [Divine Niiquaye Ibok][@divineniiquaye].
 
 You're free to use this package, but if it makes it to your production environment we highly appreciate you sending us an [email] or [message] mentioning this library. We publish all received request's at <https://patreons.biurad.com>.
 
-Check out the other cool things people are doing with `biurad/php-starter`: <https://packagist.org/packages/biurad/php-starter/dependents>
+Check out the other cool things people are doing with `biurad/php-dependency-injection`: <https://packagist.org/packages/biurad/dependency-injection/dependents>
 
 [PHP]: https://php.net
 [Composer]: https://getcomposer.org
 [@divineniiquaye]: https://github.com/divineniiquaye
-[docs]: https://docs.biurad.com/php-starter
-[commit]: https://commits.biurad.com/php-starter.git
+[docs]: https://docs.biurad.com/php-dependency-injection
+[commit]: https://commits.biurad.com/php-dependency-injection.git
 [UPGRADE]: UPGRADE-1.x.md
 [CHANGELOG]: CHANGELOG-0.x.md
 [CONTRIBUTING]: ./.github/CONTRIBUTING.md
-[All Contributors]: https://github.com/biurad/php-starter/contributors
+[All Contributors]: https://github.com/biurad/php-dependency-injection/contributors
 [Biurad Lap]: https://team.biurad.com
 [email]: support@biurad.com
 [message]: https://projects.biurad.com/message
+[nette-di]: https://github.com/nette/di
