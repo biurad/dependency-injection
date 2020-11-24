@@ -18,7 +18,29 @@ This project requires [PHP] 7.2 or higher. The recommended way to install, is vi
 $ composer require biurad/dependency-injection
 ```
 
-Write a bit of **How To** use this package, so developers can have a bit of idea about the repository before checking out documentation.
+### How To Use
+
+A deep understanding of the Dependency Injection is essential to building a powerful, large application, as well as for contributing to this library core itself. This README is focused on the new features added to [Nette Di][nette-di].
+
+This dependency is an extended version of [Nette Di][nette-di] which has been simplified for developer's convenient. With this bridge, more features have been implemented to have a fast and flexible Dependency Injection Container.
+
+> Container implementation is fully compatible with [PSR-11 Container](https://github.com/php-fig/container).
+
+### PSR-11 Container
+
+You can always access container directly in your code by requesting `Psr\Container\ContainerInterface`:
+
+```php
+use Psr\Container\ContainerInterface;
+
+class HomeContoller
+{
+    public function index(ContainerInterface $container)
+    {
+        var_dump($container->get(App\Kernel::class));
+    }
+}
+```
 
 ## 📓 Documentation
 
