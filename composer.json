@@ -23,7 +23,8 @@
     },
     "require": {
         "php": "^7.2 || ^8.0",
-        "contributte/di": "^0.4.2"
+        "contributte/di": "^0.4.2",
+        "psr/container": "^1.0"
     },
     "require-dev": {
         "composer/package-versions-deprecated": "^1.11",
@@ -41,6 +42,11 @@
     "autoload-dev": {
         "psr-4": {
             "Biurad\\DependencyInjection\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
         }
     },
     "scripts": {
