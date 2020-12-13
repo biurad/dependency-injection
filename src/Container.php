@@ -23,7 +23,6 @@ use Closure;
 use Nette\DI\Container as NetteContainer;
 use Nette\DI\Helpers;
 use Nette\DI\MissingServiceException;
-use Nette\DI\Resolver;
 use Nette\UnexpectedValueException;
 use Nette\Utils\Callback;
 use Nette\Utils\Reflection;
@@ -243,7 +242,7 @@ class Container extends NetteContainer implements FactoryInterface
 
         try {
             $this->creating[$name] = true;
-            $service               = $cb instanceof Closure ? $cb(...$args) : $this->$method(...$args);
+            $service = $cb instanceof Closure ? $cb(...$args) : $this->$method(...$args);
         } finally {
             unset($this->creating[$name]);
         }
