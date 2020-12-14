@@ -61,14 +61,12 @@ final class XmlAdapter implements Di\Config\Adapter
     public function parse(string $content, $schemaOrCallable = null): DOMDocument
     {
         $internalErrors  = \libxml_use_internal_errors(true);
-        $disableEntities = \libxml_disable_entity_loader(true);
         \libxml_clear_errors();
 
         $dom                  = new DOMDocument();
         $dom->validateOnParse = true;
 
         if (!$dom->loadXML($content, \LIBXML_NONET | (\defined('LIBXML_COMPACT') ? \LIBXML_COMPACT : 0))) {
-            \libxml_disable_entity_loader($disableEntities);
 
             $dom->loadHTML($content);
         }
@@ -76,7 +74,6 @@ final class XmlAdapter implements Di\Config\Adapter
         $dom->normalizeDocument();
 
         \libxml_use_internal_errors($internalErrors);
-        \libxml_disable_entity_loader($disableEntities);
 
         if (null !== $schemaOrCallable) {
             $internalErrors = \libxml_use_internal_errors(true);
