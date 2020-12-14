@@ -17,9 +17,12 @@ declare(strict_types=1);
 
 namespace Biurad\DependencyInjection;
 
+use Nette\DI\MissingServiceException;
 use Nette\DI\Resolver as NetteResolver;
+use Nette\DI\ServiceCreationException;
 use Nette\Utils\Reflection;
 use ReflectionFunctionAbstract;
+use ReflectionParameter;
 
 /**
  * Services resolver
@@ -33,7 +36,7 @@ class Resolver extends NetteResolver
      *
      * @param ReflectionFunctionAbstract $method
      * @param mixed[] $arguments
-     * @param  (callable(string $type, bool $single): object|object[]|null) $getter
+     * @param (callable(string $type, bool $single): object|object[]|null) $getter
      *
      * @return mixed[]
      */
@@ -76,4 +79,61 @@ class Resolver extends NetteResolver
 
         return $res;
     }
+
+    /**
+	 * Resolves missing argument using autowiring.
+     * @param ReflectionParameter $parameter
+	 * @param (callable(string $type, bool $single): object|object[]|null)  $getter
+     *
+	 * @throws ServiceCreationException
+     *
+	 * @return mixed
+	 */
+	private static function autowireArgument(ReflectionParameter $parameter, callable $getter)
+	{
+		$type = Reflection::getParameterType($parameter);
+		$method = $parameter->getDeclaringFunction();
+		$desc = Reflection::toString($parameter);
+
+		if ($type && !Reflection::isBuiltinType($type)) {
+			try {
+				$res = $getter($type, true);
+			} catch (MissingServiceException $e) {
+				$res = null;
+			} catch (ServiceCreationException $e) {
+				throw new ServiceCreationException("{$e->getMessage()} (needed by $desc)", 0, $e);
+			}
+            
+			if ($res !== null || $parameter->allowsNull()) {
+				return $res;
+			} elseif (class_exists($type) || interface_exists($type)) {
+				throw new ServiceCreationException("Service of type $type needed by $desc not found. Did you add it to configuration file?");
+			} else {
+				throw new ServiceCreationException("Class $type needed by $desc not found. Check type hint and 'use' statements.");
+			}
+
+		} elseif (
+			$method instanceof \ReflectionMethod
+			&& $type === 'array'
+			&& preg_match('#@param[ \t]+([\w\\\\]+)\[\][ \t]+\$' . $parameter->name . '#', (string) $method->getDocComment(), $m)
+			&& ($itemType = Reflection::expandClassName($m[1], $method->getDeclaringClass()))
+			&& (class_exists($itemType) || interface_exists($itemType))
+		) {
+			return $getter($itemType, false);
+
+		} elseif (
+			($type && $parameter->allowsNull())
+			|| $parameter->isOptional()
+			|| $parameter->isDefaultValueAvailable()
+		) {
+			// !optional + defaultAvailable = func($a = null, $b) since 5.4.7
+			// optional + !defaultAvailable = i.e. Exception::__construct, mysqli::mysqli, ...
+			return $parameter->isDefaultValueAvailable()
+				? Reflection::getParameterDefaultValue($parameter)
+				: null;
+
+		} else {
+			throw new ServiceCreationException("Parameter $desc has no class type hint or default value, so its value must be specified.");
+		}
+	}
 }
