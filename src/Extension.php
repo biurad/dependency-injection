@@ -19,6 +19,7 @@ namespace Biurad\DependencyInjection;
 
 use Contributte\DI\Extension\CompilerExtension;
 use Nette\DI\ContainerBuilder;
+use Nette\DI\Config\Loader as NetteLoader;
 use Nette\Loaders\RobotLoader;
 use ReflectionClass;
 
@@ -45,6 +46,20 @@ abstract class Extension extends CompilerExtension
     public function getFromConfig(string $key)
     {
         return Builder::arrayGet($this->config, $key);
+    }
+
+    /**
+     * @return NetteLoader
+     */
+    protected function createLoader(): NetteLoader
+    {
+        $loader = parent::createLoader();
+
+        $loader->addAdapter('yaml', Adapters\YamlAdapter::class);
+        $loader->addAdapter('yml', Adapters\YamlAdapter::class);
+        $loader->addAdapter('xml', Adapters\XmlAdapter::class);
+
+        return $loader;
     }
 
     /**
