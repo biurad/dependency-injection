@@ -15,7 +15,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Biurad\DependencyInjection;
+namespace Biurad\DependencyInjection\Adapters;
 
 use Closure;
 use DOMComment;
@@ -222,7 +222,7 @@ final class XmlAdapter implements Di\Config\Adapter
             $writer->startElement('html');
         } else {
             $writer->startDocument('1.0', 'UTF-8');
-            $writer->startElement('container-config');
+            $writer->startElement('container');
         }
 
         $data = \array_map(function ($value) {
