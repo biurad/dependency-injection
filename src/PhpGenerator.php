@@ -56,15 +56,14 @@ class PhpGenerator extends NettePhpGenerator
      */
     public function toString(Nette\PhpGenerator\ClassType $class): string
     {
+        $class->setExtends(Container::class);
         $class->setComment(<<<'COMMENT'
-/**
- * Main DependencyInjection Container. This class has been auto-generated
- * by the Nette Dependency Injection Component.
- *
- * Automatically detects if "container" property are presented in class or uses
- * global container as fallback.
- *
- */
+
+Main DependencyInjection Container. This class has been auto-generated
+by the Nette Dependency Injection Component.
+
+Automatically detects if "container" property are presented in class or uses
+global container as fallback.
 COMMENT);
 
         return parent::toString($class);
