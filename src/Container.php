@@ -19,7 +19,6 @@ namespace Biurad\DependencyInjection;
 
 use Biurad\DependencyInjection\Exceptions\ContainerResolutionException;
 use Biurad\DependencyInjection\Exceptions\NotFoundServiceException;
-use Closure;
 use Nette\DI\Container as NetteContainer;
 use Nette\DI\Helpers;
 use Nette\DI\MissingServiceException;
@@ -27,13 +26,6 @@ use Nette\UnexpectedValueException;
 use Nette\Utils\Callback;
 use Nette\Utils\Reflection;
 use Nette\Utils\Validators;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionMethod;
-use ReflectionType;
-use Throwable;
 
 /**
  * The dependency injection container default implementation.
@@ -87,7 +79,7 @@ class Container extends NetteContainer implements FactoryInterface
     {
         try {
             return $this->make($id);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw new NotFoundServiceException(\sprintf('Service [%s] is not found in container', $id), 0, $e);
         }
     }
@@ -128,14 +120,14 @@ class Container extends NetteContainer implements FactoryInterface
         $type = $this->parseServiceType($service);
 
         // Resolving wiring so we could call the service parent classes and interfaces.
-        if (!$service instanceof Closure) {
+        if (\is_object($service) && '' !== $type) {
             $this->resolveWiring($name, $type);
         }
 
         // Resolving the method calls.
         $this->resolveMethod($name, self::getMethodName($name), $type);
 
-        if ($service instanceof Closure) {
+        if ($service instanceof \Closure) {
             // Get the method binding for the given method.
             $this->methods[self::getMethodName($name)] = $service;
             $this->types[$name] = $type;
@@ -242,7 +234,7 @@ class Container extends NetteContainer implements FactoryInterface
 
         try {
             $this->creating[$name] = true;
-            $service = $cb instanceof Closure ? $cb(...$args) : $this->$method(...$args);
+            $service = $cb instanceof \Closure ? $cb(...$args) : $this->$method(...$args);
         } finally {
             unset($this->creating[$name]);
         }
@@ -250,7 +242,7 @@ class Container extends NetteContainer implements FactoryInterface
         if (!\is_object($service)) {
             throw new UnexpectedValueException(
                 "Unable to create service '$name', value returned by " .
-                ($cb instanceof Closure ? 'closure' : "method $method()") . ' is not object.'
+                ($cb instanceof \Closure ? 'closure' : "method $method()") . ' is not object.'
             );
         }
 
@@ -306,8 +298,8 @@ class Container extends NetteContainer implements FactoryInterface
     public function createInstance(string $class, array $args = [])
     {
         try {
-            $reflector = new ReflectionClass($class);
-        } catch (ReflectionException $e) {
+            $reflector = new \ReflectionClass($class);
+        } catch (\ReflectionException $e) {
             throw new ContainerResolutionException("Targeted class [$class] does not exist.", 0, $e);
         }
 
@@ -341,7 +333,7 @@ class Container extends NetteContainer implements FactoryInterface
                     if (!(isset($args[$position]) || isset($args[$parameter->name]))) {
                         $args[$position] = Reflection::getParameterDefaultValue($parameter);
                     }
-                } catch (ReflectionException $e) {
+                } catch (\ReflectionException $e) {
                     continue;
                 }
             }
@@ -450,16 +442,15 @@ class Container extends NetteContainer implements FactoryInterface
      */
     private function resolveWiring(string $name, $class): void
     {
-        $all = [];
-
-        foreach (\class_parents($class) + \class_implements($class) + [$class] as $class) {
-            $all[$class][] = $name;
+        if (!(\class_exists($class) || \interface_exists($class))) {
+            return;
         }
+        $parents = \class_parents($class) + \class_implements($class) + [$class];
 
-        foreach ($all as $class => $names) {
-            $this->wiring[$class] = \array_filter([
-                \array_diff($names, $this->findByType($class) ?? [], $this->findByTag($class) ?? []),
-            ]);
+        foreach ($parents as $parent) {
+            $this->wiring[$parent] = \array_merge(\array_filter(
+                [$this->findByType($parent), $this->findByTag($parent), [$name]]
+            ));
         }
     }
 
@@ -468,14 +459,14 @@ class Container extends NetteContainer implements FactoryInterface
      *
      * @param array|string $method
      *
-     * @return null|ReflectionType
+     * @return null|\ReflectionType
      */
-    private function parseBindMethod($method): ?ReflectionType
+    private function parseBindMethod($method): ?\ReflectionType
     {
         return Callback::toReflection($method)->getReturnType();
     }
 
-    private function autowireArguments(ReflectionFunctionAbstract $function, array $args = []): array
+    private function autowireArguments(\ReflectionFunctionAbstract $function, array $args = []): array
     {
         return Resolver::autowireArguments($function, $args, function (string $type, bool $single) {
             return $single
@@ -493,8 +484,8 @@ class Container extends NetteContainer implements FactoryInterface
      */
     private function parseServiceType($abstract): string
     {
-        if ($abstract instanceof Closure) {
-            /** @var ReflectionFunction $tmp */
+        if ($abstract instanceof \Closure) {
+            /** @var \ReflectionFunction $tmp */
             if ($tmp = $this->parseBindMethod($abstract)) {
                 return $tmp->getName();
             }
