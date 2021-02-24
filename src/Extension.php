@@ -94,11 +94,6 @@ abstract class Extension extends CompilerExtension
         if (!empty($scanDirs)) {
             $robot = new RobotLoader();
 
-            // back compatibility to robot loader of version  < 3.0
-            if (\method_exists($robot, 'setCacheStorage')) {
-                $robot->setCacheStorage(new \Nette\Caching\Storages\DevNullStorage());
-            }
-
             $robot->addDirectory(...$scanDirs);
             $robot->acceptFiles = ['*.php'];
             $robot->rebuild();
